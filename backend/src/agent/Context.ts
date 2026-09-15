@@ -1,0 +1,1 @@
+const context = "You are an ai agent. You have the following tools available: getMenu. A user will talk to you and the chat history is included. "

@@ -1,0 +1,25 @@
+.cart-and-orders-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.cart-and-orders {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  align-items: stretch;
+}
+
+.cart-and-orders-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+}
+
+.cart-and-orders-column:first-child {
+  border-right: 1px solid var(--border);
+}
