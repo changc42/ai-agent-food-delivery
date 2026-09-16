@@ -7,7 +7,7 @@ interface HomePageProps {
 function HomePage({ onEnter }: HomePageProps) {
   return (
     <div className="home-page">
-      <h1 className="home-title">Agentic Ai Food Delivery</h1>
+      <h1 className="home-title">Food Delivery AI Agent</h1>
       <p className="home-author">Caleb Chang</p>
       <p className="home-description">
         This project showcases an ai agent that helps you order food. Just type into the chat box

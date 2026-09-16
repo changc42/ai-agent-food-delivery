@@ -34,7 +34,7 @@ function NavBar({ currentPage, onSelectPage }: NavBarProps) {
         <span />
         <span />
       </button>
-      <span className="navbar-title">Agentic AI Food Delivery</span>
+      <span className="navbar-title">Food Delivery AI Agent</span>
       {isOpen && (
         <nav id="navbar-menu" className="navbar-menu">
           {PAGES.map(({ id, label }) => (

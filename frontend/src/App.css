@@ -62,3 +62,42 @@
   box-sizing: border-box;
   border-right: 1px solid var(--border);
 }
+
+.chat-menu-preview {
+  display: none;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .chat-menu-preview {
+    display: block;
+  }
+
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .chat-sidebar {
+    display: none;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    border-right: none;
+  }
+
+  .chat-sidebar.mobile-active {
+    display: flex;
+  }
+
+  .app-main {
+    display: none;
+  }
+
+  .app-main.mobile-active {
+    display: flex;
+  }
+
+  .page-content {
+    padding: 20px 16px;
+  }
+}

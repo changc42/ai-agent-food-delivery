@@ -23,3 +23,30 @@
 .cart-and-orders-column:first-child {
   border-right: 1px solid var(--border);
 }
+
+.menu-preview-wrapper {
+  display: contents;
+}
+
+@media (max-width: 1024px) {
+  .cart-and-orders {
+    flex-direction: column;
+  }
+
+  .cart-and-orders-column {
+    display: none;
+    padding: 0;
+  }
+
+  .cart-and-orders-column.mobile-active {
+    display: flex;
+  }
+
+  .cart-and-orders-column:first-child {
+    border-right: none;
+  }
+
+  .menu-preview-wrapper {
+    display: none;
+  }
+}

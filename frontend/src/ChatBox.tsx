@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport } from 'ai'
 import { BACKEND_URL } from './config'
@@ -9,6 +9,12 @@ function ChatBox() {
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({ api: `${BACKEND_URL}/api/chat` }),
   })
+  const messagesRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = messagesRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [messages])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -19,7 +25,7 @@ function ChatBox() {
 
   return (
     <div className="chatbox">
-      <div className="chatbox-messages">
+      <div className="chatbox-messages" ref={messagesRef}>
         {messages.length === 0 && (
           <p className="chatbox-empty">Ask me anything about your order...</p>
         )}

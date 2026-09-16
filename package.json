@@ -2,8 +2,8 @@
   "name": "food-app",
   "private": true,
   "scripts": {
-    "docker:build": "docker build -t changc42/agentic-ai-food-delivery .",
-    "docker:push": "docker push changc42/agentic-ai-food-delivery",
+    "docker:build": "docker build -t changc42/food-agent .",
+    "docker:push": "docker push changc42/food-agent",
     "docker:build-push": "npm run docker:build && npm run docker:push"
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BACKEND_URL } from '../config'
 import './OrdersPage.css'
 
@@ -29,15 +29,32 @@ function calculateTotal(orderLineItems: OrderLineItemData[]) {
   return orderLineItems.reduce((total, { menuItem, quantity }) => total + menuItem.price * quantity, 0)
 }
 
-function OrdersPage() {
+interface OrdersPageProps {
+  onOrdersChange?: () => void
+}
+
+function OrdersPage({ onOrdersChange }: OrdersPageProps) {
   const [orders, setOrders] = useState<OrderData[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const prevOrdersRef = useRef<string | null>(null)
+
+  const applyOrders = (nextOrders: OrderData[]) => {
+    setOrders(nextOrders)
+    prevOrdersRef.current = JSON.stringify(nextOrders)
+  }
 
   useEffect(() => {
     const fetchOrders = () =>
       fetch(`${BACKEND_URL}/api/orders`)
         .then((res) => res.json())
-        .then((data) => setOrders(data.orders))
+        .then((data) => {
+          setOrders(data.orders)
+          const serialized = JSON.stringify(data.orders)
+          if (prevOrdersRef.current !== null && prevOrdersRef.current !== serialized) {
+            onOrdersChange?.()
+          }
+          prevOrdersRef.current = serialized
+        })
         .catch(() => setError('Could not load your orders.'))
 
     fetchOrders()
@@ -48,7 +65,7 @@ function OrdersPage() {
   const handleClearOrders = () => {
     fetch(`${BACKEND_URL}/api/orders/reset`, { method: 'POST' })
       .then((res) => res.json())
-      .then((data) => setOrders(data.orders))
+      .then((data) => applyOrders(data.orders))
       .catch(() => {})
   }
 

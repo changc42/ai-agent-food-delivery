@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BACKEND_URL } from '../config'
 import { MENU_ITEM_EMOJI } from '../menuItemEmoji'
 import './CartPage.css'
@@ -11,17 +11,34 @@ interface MenuItemData {
 type CartEntry = { menuItem: MenuItemData, quantity: number }
 type Cart = Record<string, CartEntry>
 
-function CartPage() {
+interface CartPageProps {
+  onCartChange?: () => void
+}
+
+function CartPage({ onCartChange }: CartPageProps) {
   const [cart, setCart] = useState<Cart | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [removalKey, setRemovalKey] = useState<string | null>(null)
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
+  const prevCartRef = useRef<string | null>(null)
+
+  const applyCart = (nextCart: Cart) => {
+    setCart(nextCart)
+    prevCartRef.current = JSON.stringify(nextCart)
+  }
 
   useEffect(() => {
     const fetchCart = () =>
       fetch(`${BACKEND_URL}/api/cart`)
         .then((res) => res.json())
-        .then((data) => setCart(data.cart))
+        .then((data) => {
+          setCart(data.cart)
+          const serialized = JSON.stringify(data.cart)
+          if (prevCartRef.current !== null && prevCartRef.current !== serialized) {
+            onCartChange?.()
+          }
+          prevCartRef.current = serialized
+        })
         .catch(() => setError('Could not load the cart.'))
 
     fetchCart()
@@ -36,14 +53,14 @@ function CartPage() {
       body: JSON.stringify({ menuItemFieldName }),
     })
       .then((res) => res.json())
-      .then((data) => setCart(data.cart))
+      .then((data) => applyCart(data.cart))
       .catch(() => {})
   }
 
   const handleDecrement = (menuItemFieldName: string) => {
     fetch(`${BACKEND_URL}/api/cart/items/${menuItemFieldName}`, { method: 'DELETE' })
       .then((res) => res.json())
-      .then((data) => setCart(data.cart))
+      .then((data) => applyCart(data.cart))
       .catch(() => {})
   }
 
@@ -51,7 +68,7 @@ function CartPage() {
     if (!removalKey) return
     fetch(`${BACKEND_URL}/api/cart/items/${removalKey}`, { method: 'DELETE' })
       .then((res) => res.json())
-      .then((data) => setCart(data.cart))
+      .then((data) => applyCart(data.cart))
       .catch(() => {})
       .finally(() => setRemovalKey(null))
   }
@@ -59,7 +76,7 @@ function CartPage() {
   const handlePlaceOrder = () => {
     setIsPlacingOrder(true)
     fetch(`${BACKEND_URL}/api/orders`, { method: 'POST' })
-      .then(() => setCart({}))
+      .then(() => applyCart({}))
       .catch(() => {})
       .finally(() => setIsPlacingOrder(false))
   }
@@ -67,7 +84,7 @@ function CartPage() {
   const handleClearCart = () => {
     fetch(`${BACKEND_URL}/api/cart/clear`, { method: 'POST' })
       .then((res) => res.json())
-      .then((data) => setCart(data.cart))
+      .then((data) => applyCart(data.cart))
       .catch(() => {})
   }
 
